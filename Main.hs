@@ -21,6 +21,7 @@ data GameState = Game
     , paddleSpeed :: Int
     , endgame :: Bool
     , paused :: Bool
+    , tick :: Int
     , gameMode :: GameMode
     } deriving Show
     
@@ -34,6 +35,7 @@ initialState = Game
     , paddleSpeed = 10
     , endgame = False
     , paused = False
+    , tick = 0
     , gameMode = AI -- by default you play against computer.
     }
     
@@ -42,6 +44,8 @@ render :: GameState -> Picture
 render game = 
     pictures 
     [ uncurry createBall (ballLoc game)
+    , score_img
+    , info
     , borders 
     , createPaddle green paddle_offset $ player1 game
     , createPaddle orange (-paddle_offset) $ player2 game
@@ -58,6 +62,13 @@ render game =
             , translate x y $ color ballColor $ circleSolid 10
             , translate (x+3) (y+3) $ color white $ circleSolid 2
             ]
+            
+        -- Score:
+        score_img = translate (-10) (100) $ scale 0.3 0.3 $ color black $ text $ show game_score
+        game_score = tick game `div` 60
+        
+        -- Info:
+        info = translate (-30) (-130) $ scale 0.1 0.1 $ color black $ text $ "mode: " ++ show (gameMode game)
         
         -- Borders:
         border :: Float -> Picture
@@ -80,11 +91,13 @@ moveBall :: Float -- number of seconds since last update
          -> GameState -- initial game state
          -> GameState -- resulting game state
          
-moveBall seconds game = game { ballLoc = (x', y')}
+moveBall seconds game = game { ballLoc = (x', y'), tick = update_ticks }
     where
         (x, y) = ballLoc game
         (vx, vy) = ballVel game
         (x', y') = if paused game then (x, y) else (x + vx * seconds, y + vy * seconds)
+        tock = tick game
+        update_ticks = if endgame game then tock else tock + 1
         --x' = x + vx * seconds
         --y' = y + vy * seconds
         
@@ -93,7 +106,7 @@ fps :: Int
 fps = 60
 
 window :: Display
-window = InWindow "pong window" (width, height) (offset, offset) -- initializing window
+window = InWindow "Ping-Pong" (width, height) (offset, offset) -- initializing window
 
 background :: Color
 background = white
@@ -103,8 +116,16 @@ applyN :: (Num n, Eq n) => n -> (a->a) -> a -> a
 applyN 1 f x = f x
 applyN n f x = f (applyN (n-1) f x)
         
-update seconds = autoPlayAI . speedIncrease . outOfPlayzone . paddleBounce . borderBounce . moveBall seconds
+update seconds = autoPlayAI .
+                 speedIncrease .
+                 outOfPlayzone . 
+                 paddleBounce . 
+                 borderBounce .
+                 moveBall seconds
 
+                 
+
+                 
 autoPlayAI_ez :: GameState -> GameState -- medium level AI (you can outplay it)
 autoPlayAI_ez game = if gameMode game == AI 
                     then
@@ -226,6 +247,7 @@ borderCollision (_, y) radius = topCollision || bottomCollision
 handler :: Event -> GameState -> GameState
 handler (EventKey (Char 'r') _ _ _) game = game { ballLoc = (0, 0),
                                                   ballVel = (80, 30),
+                                                  tick = 0,
                                                   endgame = False }
 
 handler (EventKey (Char 'p') _ _ _) game = game { paused = option }
