@@ -1,0 +1,46 @@
+cabal: Entering directory '/var/folders/nr/ns1ksggj3dl_8dxh33h_ms4h0000gn/T/cabal-tmp-31503/gloss-rendering-1.12.0.0'
+Configuring gloss-rendering-1.12.0.0...
+Preprocessing library for gloss-rendering-1.12.0.0..
+Building library for gloss-rendering-1.12.0.0..
+[1 of 9] Compiling Graphics.Gloss.Internals.Data.Color ( Graphics/Gloss/Internals/Data/Color.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Data/Color.o )
+[2 of 9] Compiling Graphics.Gloss.Internals.Rendering.Bitmap ( Graphics/Gloss/Internals/Rendering/Bitmap.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Bitmap.o )
+[3 of 9] Compiling Graphics.Gloss.Internals.Data.Picture ( Graphics/Gloss/Internals/Data/Picture.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Data/Picture.o )
+[4 of 9] Compiling Graphics.Gloss.Internals.Rendering.Color ( Graphics/Gloss/Internals/Rendering/Color.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Color.o )
+[5 of 9] Compiling Graphics.Gloss.Internals.Rendering.Common ( Graphics/Gloss/Internals/Rendering/Common.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Common.o )
+[6 of 9] Compiling Graphics.Gloss.Internals.Rendering.Circle ( Graphics/Gloss/Internals/Rendering/Circle.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Circle.o )
+[7 of 9] Compiling Graphics.Gloss.Internals.Rendering.State ( Graphics/Gloss/Internals/Rendering/State.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/State.o )
+[8 of 9] Compiling Graphics.Gloss.Internals.Rendering.Picture ( Graphics/Gloss/Internals/Rendering/Picture.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Picture.o )
+[9 of 9] Compiling Graphics.Gloss.Rendering ( Graphics/Gloss/Rendering.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Rendering.o )
+[1 of 9] Compiling Graphics.Gloss.Internals.Data.Color ( Graphics/Gloss/Internals/Data/Color.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Data/Color.p_o )
+[2 of 9] Compiling Graphics.Gloss.Internals.Rendering.Bitmap ( Graphics/Gloss/Internals/Rendering/Bitmap.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Bitmap.p_o )
+[3 of 9] Compiling Graphics.Gloss.Internals.Data.Picture ( Graphics/Gloss/Internals/Data/Picture.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Data/Picture.p_o )
+[4 of 9] Compiling Graphics.Gloss.Internals.Rendering.Color ( Graphics/Gloss/Internals/Rendering/Color.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Color.p_o )
+[5 of 9] Compiling Graphics.Gloss.Internals.Rendering.Common ( Graphics/Gloss/Internals/Rendering/Common.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Common.p_o )
+[6 of 9] Compiling Graphics.Gloss.Internals.Rendering.Circle ( Graphics/Gloss/Internals/Rendering/Circle.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Circle.p_o )
+[7 of 9] Compiling Graphics.Gloss.Internals.Rendering.State ( Graphics/Gloss/Internals/Rendering/State.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/State.p_o )
+[8 of 9] Compiling Graphics.Gloss.Internals.Rendering.Picture ( Graphics/Gloss/Internals/Rendering/Picture.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Internals/Rendering/Picture.p_o )
+[9 of 9] Compiling Graphics.Gloss.Rendering ( Graphics/Gloss/Rendering.hs, dist/dist-sandbox-c13d1b49/build/Graphics/Gloss/Rendering.p_o )
+Preprocessing library for gloss-rendering-1.12.0.0..
+Running Haddock on library for gloss-rendering-1.12.0.0..
+Haddock coverage:
+ 100% (  8 /  8) in 'Graphics.Gloss.Internals.Data.Color'
+ 100% (  7 /  7) in 'Graphics.Gloss.Internals.Rendering.Bitmap'
+ 100% ( 14 / 14) in 'Graphics.Gloss.Internals.Data.Picture'
+  50% (  1 /  2) in 'Graphics.Gloss.Internals.Rendering.Color'
+  Missing documentation for:
+    Module header
+  80% (  4 /  5) in 'Graphics.Gloss.Internals.Rendering.Common'
+  Missing documentation for:
+    Module header
+ 100% (  3 /  3) in 'Graphics.Gloss.Internals.Rendering.Circle'
+ 100% (  4 /  4) in 'Graphics.Gloss.Internals.Rendering.State'
+  50% (  1 /  2) in 'Graphics.Gloss.Internals.Rendering.Picture'
+  Missing documentation for:
+    Module header
+  97% ( 29 / 30) in 'Graphics.Gloss.Rendering'
+  Missing documentation for:
+    Module header
+Documentation created:
+dist/dist-sandbox-c13d1b49/doc/html/gloss-rendering/index.html
+Installing library in /Users/avask/Documents/LearningHaskell/Demo/.cabal-sandbox/lib/x86_64-osx-ghc-8.2.2/gloss-rendering-1.12.0.0-5iWmdq7wzNxBqc1QdqhfYn
+cabal: Leaving directory '/var/folders/nr/ns1ksggj3dl_8dxh33h_ms4h0000gn/T/cabal-tmp-31503/gloss-rendering-1.12.0.0'
