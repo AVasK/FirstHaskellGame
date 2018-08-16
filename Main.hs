@@ -11,6 +11,8 @@ height = 300
 offset = 100
 paddle_offset = 120
 
+data GameMode = PVP | AI deriving (Show, Eq) -- pretty self-explanatory
+
 data GameState = Game 
     { ballLoc :: (Float, Float)
     , ballVel :: (Float, Float)
@@ -19,6 +21,7 @@ data GameState = Game
     , paddleSpeed :: Int
     , endgame :: Bool
     , paused :: Bool
+    , gameMode :: GameMode
     } deriving Show
     
 -- | Desctibes the initial state of the Pong game
@@ -31,6 +34,7 @@ initialState = Game
     , paddleSpeed = 10
     , endgame = False
     , paused = False
+    , gameMode = AI -- by default you play against computer.
     }
     
 -- | Game State -> Picture
@@ -99,15 +103,68 @@ applyN :: (Num n, Eq n) => n -> (a->a) -> a -> a
 applyN 1 f x = f x
 applyN n f x = f (applyN (n-1) f x)
         
-update seconds = speedIncrease . outOfPlayzone . paddleBounce . borderBounce . moveBall seconds
+update seconds = autoPlayAI . speedIncrease . outOfPlayzone . paddleBounce . borderBounce . moveBall seconds
+
+autoPlayAI_ez :: GameState -> GameState -- medium level AI (you can outplay it)
+autoPlayAI_ez game = if gameMode game == AI 
+                    then
+                        game { player1 = player1 game + direction_sign * fromIntegral (paddleSpeed game)}
+                    else
+                        game
+                    
+                        where
+                                error_threshold = 10 -- size of an active area of a paddle
+                                (_, y) = ballLoc game 
+                                y' = player1 game
+                                direction_sign = 
+                                    if abs (y - y') <= error_threshold
+                                    then
+                                          0
+                                    else
+                                        sign (y - y')
+                                --direction_sign = sign (y - y')
+                                sign x = if x < 0 then -1 else 1
+                        
+                                
+autoPlayAI :: GameState -> GameState -- more hardcore mode
+autoPlayAI game = if gameMode game == AI && vx > 0
+                    then
+                        game { player1 = player1 game + direction_sign * fromIntegral (paddleSpeed game)}
+                    else
+                        game
+                    
+                        where
+                                error_threshold = 10 -- size of an active area of a paddle
+                                (x, y) = ballLoc game 
+                                (vx, vy) = ballVel game
+                                y' = player1 game
+                                
+                                -- Estimating where the ball will be:
+                                y_hit = y + vy * tx -- one case dropped out (!!!)
+                                    
+                                tx = sx / vx
+                                sx = paddle_offset - x
+                                sy = fromIntegral height / 2 - y
+                                
+                                
+                                direction_sign = 
+                                    if abs (y_hit - y') <= error_threshold
+                                    then
+                                          0
+                                    else
+                                        sign (y_hit - y')
+                                --direction_sign = sign (y - y')
+                                sign x = if x < 0 then -1 else 1
+        
+    
 
 speedIncrease :: GameState -> GameState
 speedIncrease game = game { ballVel = (vx', vy'), paddleSpeed = paddleSpeed' }
     where
         (vx, vy) = ballVel game
-        vx' = vx * 1.001
-        vy' = vy * 1.001
-        paddleSpeed' = 8 + round (velocity (vx', vy') / 10)
+        vx' = if velocity (vx, vy) <= 350 then vx * 1.001 else vx
+        vy' = if velocity (vx, vy) <= 350 then vy * 1.001 else vy
+        paddleSpeed' = min (8 + round (velocity (vx', vy') / 10)) 18
         
 
 type Radius = Float
@@ -146,8 +203,8 @@ paddleBounce game = game { ballVel = (vx', vy) }
 paddleCollision :: Position -> Radius -> Float -> Float -> Bool
 paddleCollision (x, y) radius paddle1 paddle2 = leftCollision || rightCollision
     where
-        leftCollision = x - radius <= - (paddle_offset - 5) && x - radius >= - paddle_offset && abs (y - paddle2) <= 40
-        rightCollision = x + radius >= (paddle_offset - 5) && x + radius <= paddle_offset && abs (y - paddle1) <= 40
+        leftCollision = x - radius <= - (paddle_offset - 5) && x - radius >= - (paddle_offset + 8) && abs (y - paddle2) <= 40
+        rightCollision = x + radius >= (paddle_offset - 5) && x + radius <= (paddle_offset + 8) && abs (y - paddle1) <= 40
 
 borderBounce :: GameState -> GameState
 borderBounce game = game { ballVel = (vx, vy')}
@@ -167,37 +224,43 @@ borderCollision (_, y) radius = topCollision || bottomCollision
           
           
 handler :: Event -> GameState -> GameState
-handler (EventKey (Char 'r') _ _ _) game = game { ballLoc = (0, 0), ballVel = (80, 30), endgame = False }
+handler (EventKey (Char 'r') _ _ _) game = game { ballLoc = (0, 0),
+                                                  ballVel = (80, 30),
+                                                  endgame = False }
 
 handler (EventKey (Char 'p') _ _ _) game = game { paused = option }
     where
         option = not $ paused game
 
 -- left player input
-handler (EventKey (Char 'w') _ _ _) game = if player2 game <= fromIntegral height / 2 - 43 && (not $ paused game)
-                                           then
-                                               game { player2 = player2 game + fromIntegral (paddleSpeed game)}
-                                           else
-                                               game
+handler (EventKey (Char 'w') _ _ _) game = 
+    if player2 game <= fromIntegral height / 2 - 43 && (not $ paused game)
+        then
+            game { player2 = player2 game + fromIntegral (paddleSpeed game)}
+        else
+            game
                                               
-handler (EventKey (Char 's') _ _ _) game = if player2 game >= -fromIntegral height / 2 + 43 && (not $ paused game)
-                                           then
-                                               game { player2 = player2 game - fromIntegral (paddleSpeed game) }
-                                           else
-                                               game 
+handler (EventKey (Char 's') _ _ _) game = 
+    if player2 game >= -fromIntegral height / 2 + 43 && (not $ paused game)
+        then
+            game { player2 = player2 game - fromIntegral (paddleSpeed game) }
+        else
+            game 
         
 -- right player:
-handler (EventKey (Char 'o') _ _ _) game = if player1 game <= fromIntegral height / 2 - 43 && (not $ paused game)
-                                           then
-                                               game { player1 = player1 game + fromIntegral (paddleSpeed game) }
-                                           else
-                                               game
+handler (EventKey (Char 'o') _ _ _) game = 
+    if player1 game <= fromIntegral height / 2 - 43 && (not $ paused game)  &&  (gameMode game == PVP)                                 
+        then
+            game { player1 = player1 game + fromIntegral (paddleSpeed game) }
+        else
+            game
                                               
-handler (EventKey (Char 'l') _ _ _) game = if player1 game >= -fromIntegral height / 2 + 43 && (not $ paused game)
-                                           then
-                                               game { player1 = player1 game - fromIntegral (paddleSpeed game) }
-                                           else
-                                               game 
+handler (EventKey (Char 'l') _ _ _) game = 
+    if player1 game >= -fromIntegral height / 2 + 43 && (not $ paused game) && (gameMode game == PVP)
+    then
+        game { player1 = player1 game - fromIntegral (paddleSpeed game) }
+    else
+        game 
     
 handler _ game = game
 
