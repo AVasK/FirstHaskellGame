@@ -68,7 +68,9 @@ render game =
         game_score = tick game `div` 60
         
         -- Info:
-        info = translate (-30) (-130) $ scale 0.1 0.1 $ color black $ text $ "mode: " ++ show (gameMode game)
+        info = if tick game `div` 60 >= 10 then pictures [info_1] else pictures [info_1, info_2]
+        info_1 = translate (-40) (-130) $ scale 0.1 0.1 $ color black $ text $ "< mode: " ++ show (gameMode game) ++ " >"
+        info_2 = translate (-50) (-145) $ scale 0.1 0.1 $ color black $ text $ "W/S = up/down"
         
         -- Borders:
         border :: Float -> Picture
